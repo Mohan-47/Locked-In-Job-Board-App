@@ -46,8 +46,7 @@ it allows candidates to find and apply for jobs, while recruiters can post and m
 - Register and log in
 - Search and filter jobs by title, company, location, and job type
 - Apply to jobs
-- View application status (e.g., In Review, Shortlisted, Rejected) (Not integrated with Frontend API built)
-- Bookmark jobs
+- View application status (e.g., In Review, Shortlisted, Rejected)
 - Manage profile
 
 ### 🧑‍💼 Recruiters
