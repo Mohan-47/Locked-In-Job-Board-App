@@ -63,7 +63,6 @@ it allows candidates to find and apply for jobs, while recruiters can post and m
 - Reusable components and modern design
 
 ###Features Remaining
-- Job status Front end 
 - Notifications
 - Messaging
 - Save Jobs
