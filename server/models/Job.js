@@ -15,11 +15,11 @@ const jobSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["full-time", "part-time", "contract", "internship"],
+    enum: ["Full-time", "Part-time", "Contract", "Internship"],
     required: true,
   },
   salary: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -31,7 +31,7 @@ const jobSchema = new mongoose.Schema({
     required: true,
   },
   employees: {
-    type: Number,
+    type: String,
   },
   companyLocation: {
     type: String,
@@ -56,8 +56,8 @@ const jobSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["open", "closed"],
-    default: "open",
+    enum: ["Open", "Closed"],
+    default: "Open",
   },
 });
 

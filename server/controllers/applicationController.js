@@ -1,5 +1,6 @@
 import Application from "../models/Application.js";
-
+import Job from "../models/Job.js";
+import { getMyJobs } from "./jobController.js";
 // Apply to a job
 export const applyToJob = async (req, res) => {
   try {
@@ -16,6 +17,11 @@ export const applyToJob = async (req, res) => {
 
     const application = new Application({ job: jobId, candidate: candidateId });
     await application.save();
+    await Job.findByIdAndUpdate(
+      jobId,
+      { $addToSet: { applicants: candidateId } } // $addToSet prevents duplicates
+    );
+    await Job.findById(jobId).populate("applicants");
     res.status(201).json(application);
   } catch (err) {
     console.error("Error applying to job:", err);
@@ -67,5 +73,26 @@ export const updateApplicationStatus = async (req, res) => {
   } catch (err) {
     console.error("Error updating application status:", err);
     res.status(500).json({ message: "Error updating application status" });
+  }
+};
+
+//applications received by the recruiter
+export const getApplicationsReceived = async (req, res) => {
+  try {
+    const recruiterId = req.user.userId;
+    const jobs = await Job.find({ postedBy: recruiterId });
+    console.log(jobs);
+    const applications = await Application.find({
+      job: { $in: jobs.map((job) => job._id) },
+    })
+      .populate("candidate")
+      .populate("job")
+
+      .sort({ appliedAt: -1 });
+
+    res.json(applications);
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ message: "Error fetching applications" });
   }
 };

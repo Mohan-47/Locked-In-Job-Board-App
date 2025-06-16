@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { FaUserPlus } from "react-icons/fa";
 import { assets } from '../assets/assets';
+import api from '../api/axios.js';
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -20,7 +21,7 @@ const Register = () => {
     setSuccess('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setError('Please fill in all fields.');
@@ -31,10 +32,19 @@ const Register = () => {
       return;
     }
     // Simulate successful registration
-    setSuccess('Registration successful! Redirecting to login...');
-    setTimeout(() => {
-      navigate('/login');
-    }, 2000);
+    try {
+      await api.post('/auth/register', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        role: form.role,
+      });
+      setSuccess('Registration successful! Redirecting to login...');
+      setTimeout(() => navigate('/login'), 2000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
+
     setForm({
       name: '',
       email: '',

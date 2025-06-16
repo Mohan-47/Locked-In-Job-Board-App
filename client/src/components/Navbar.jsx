@@ -4,11 +4,15 @@ import { Link, useLocation } from 'react-router-dom'
 import { FaBell, FaUserCircle } from "react-icons/fa";
 // import { useNavigate } from 'react-router-dom'
 
+const getRole = () => {
+
+    return localStorage.getItem('role');
+};
 
 const Navbar = () => {
     const location = useLocation();
     const isHome = location.pathname === '/';
-    const isProfile = location.pathname === '/user/profile';
+    const role = getRole();
     return (
         <div className='shadow py-4 border-b border-zinc-700/50 sticky top-0 z-10  backdrop-blur-xl'>
             <div className='container px-8 2x1:px-20 mx-auto flex justify-between items-center'>
@@ -41,14 +45,14 @@ const Navbar = () => {
                     ) : (
                         <div className='flex gap-4 items-center max-sm:text-xs'>
                             <FaBell className="text-fuchsia-400 text-xl cursor-pointer" />
-                            <Link to="/user/profile" className={` ${isProfile ? "border-2 border-fuchsia-500 rounded-full" : ""}`}>
+                            <Link to={role === 'Candidate' ? '/user/profile' : '/recruiter/profile'} className="border-2 border-fuchsia-500 rounded-full">
                                 <FaUserCircle className=" text-3xl cursor-pointer" />
                             </Link>
                         </div>
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

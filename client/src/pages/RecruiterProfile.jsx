@@ -1,7 +1,17 @@
-import React, { useState } from 'react'
-import Navbar from '../components/Navbar'
-import UserPanel from '../components/UserPanel'
-import { FaBuilding, FaEnvelope, FaPhone, FaBriefcase, FaEdit, FaMapMarkerAlt, FaUserTie, FaSave, FaTimes } from "react-icons/fa"
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import UserPanel from "../components/UserPanel";
+import {
+    FaBuilding,
+    FaEnvelope,
+    FaPhone,
+    FaBriefcase,
+    FaEdit,
+    FaMapMarkerAlt,
+    FaUserTie,
+    FaSave,
+    FaTimes,
+} from "react-icons/fa";
 
 const initialRecruiter = {
     name: "Sarah Williams",
@@ -10,45 +20,62 @@ const initialRecruiter = {
     email: "sarah.williams@acmetech.com",
     phone: "+1 555-123-4567",
     location: "San Francisco, CA",
-    about: "Experienced recruiter with a passion for connecting top talent with innovative companies. Skilled in tech hiring, employer branding, and building strong candidate relationships.",
+    about:
+        "Experienced recruiter with a passion for connecting top talent with innovative companies. Skilled in tech hiring, employer branding, and building strong candidate relationships.",
     avatar: "https://randomuser.me/api/portraits/women/44.jpg",
     stats: [
-        { label: "Jobs Posted", value: 24, icon: <FaBriefcase className="text-fuchsia-400" /> },
-        { label: "Hires", value: 12, icon: <FaUserTie className="text-green-400" /> },
-        { label: "Active Listings", value: 3, icon: <FaBriefcase className="text-cyan-400" /> },
+        {
+            label: "Jobs Posted",
+            value: 24,
+            icon: <FaBriefcase className="text-fuchsia-400" />,
+        },
+        {
+            label: "Hires",
+            value: 12,
+            icon: <FaUserTie className="text-green-400" />,
+        },
+        {
+            label: "Active Listings",
+            value: 3,
+            icon: <FaBriefcase className="text-cyan-400" />,
+        },
     ],
     social: [
-        { label: "LinkedIn", url: "https://linkedin.com", icon: <FaBuilding className="text-blue-500" /> },
-    ]
-}
+        {
+            label: "LinkedIn",
+            url: "https://linkedin.com",
+            icon: <FaBuilding className="text-blue-500" />,
+        },
+    ],
+};
 
 const RecruiterProfile = () => {
-    const [recruiter, setRecruiter] = useState(initialRecruiter)
-    const [editMode, setEditMode] = useState(false)
-    const [form, setForm] = useState(recruiter)
+    const [recruiter, setRecruiter] = useState(initialRecruiter);
+    const [editMode, setEditMode] = useState(false);
+    const [form, setForm] = useState(recruiter);
 
     const handleEdit = () => {
-        setForm(recruiter)
-        setEditMode(true)
-    }
+        setForm(recruiter);
+        setEditMode(true);
+    };
 
     const handleCancel = () => {
-        setEditMode(false)
-    }
+        setEditMode(false);
+    };
 
-    const handleChange = e => {
-        const { name, value } = e.target
-        setForm(prev => ({ ...prev, [name]: value }))
-    }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
 
-    const handleSave = e => {
-        e.preventDefault()
-        setRecruiter(prev => ({
+    const handleSave = (e) => {
+        e.preventDefault();
+        setRecruiter((prev) => ({
             ...prev,
-            ...form
-        }))
-        setEditMode(false)
-    }
+            ...form,
+        }));
+        setEditMode(false);
+    };
 
     return (
         <div className="min-h-screen">
@@ -75,10 +102,16 @@ const RecruiterProfile = () => {
                                             className="text-3xl font-bold text-white bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 w-full"
                                         />
                                     ) : (
-                                        <h2 className="text-3xl font-bold text-white">{recruiter.name}</h2>
+                                        <h2 className="text-3xl font-bold text-white">
+                                            {recruiter.name}
+                                        </h2>
                                     )}
                                     {!editMode && (
-                                        <button className="ml-2 p-2 rounded-full bg-zinc-700 hover:bg-fuchsia-700 transition" title="Edit Profile" onClick={handleEdit}>
+                                        <button
+                                            className="ml-2 p-2 rounded-full bg-zinc-700 hover:bg-fuchsia-700 transition"
+                                            title="Edit Profile"
+                                            onClick={handleEdit}
+                                        >
                                             <FaEdit className="text-fuchsia-400" />
                                         </button>
                                     )}
@@ -92,7 +125,9 @@ const RecruiterProfile = () => {
                                         className="text-fuchsia-400 font-semibold text-lg bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 w-full mb-1"
                                     />
                                 ) : (
-                                    <div className="text-fuchsia-400 font-semibold text-lg">{recruiter.title}</div>
+                                    <div className="text-fuchsia-400 font-semibold text-lg">
+                                        {recruiter.title}
+                                    </div>
                                 )}
                                 <div className="flex items-center gap-2 mt-2 text-zinc-300">
                                     <FaBuilding className="text-fuchsia-400" />
@@ -134,7 +169,12 @@ const RecruiterProfile = () => {
                                                 className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-zinc-300 w-full"
                                             />
                                         ) : (
-                                            <a href={`mailto:${recruiter.email}`} className="hover:text-fuchsia-400 transition">{recruiter.email}</a>
+                                            <a
+                                                href={`mailto:${recruiter.email}`}
+                                                className="hover:text-fuchsia-400 transition"
+                                            >
+                                                {recruiter.email}
+                                            </a>
                                         )}
                                     </span>
                                     <span className="flex items-center gap-1 text-zinc-300">
@@ -153,8 +193,14 @@ const RecruiterProfile = () => {
                                     </span>
                                 </div>
                                 <div className="flex gap-3 mt-3">
-                                    {recruiter.social.map(s => (
-                                        <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition">
+                                    {recruiter.social.map((s) => (
+                                        <a
+                                            key={s.label}
+                                            href={s.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:scale-110 transition"
+                                        >
                                             {s.icon}
                                         </a>
                                     ))}
@@ -180,9 +226,14 @@ const RecruiterProfile = () => {
                         {/* Stats Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                             {recruiter.stats.map((stat, idx) => (
-                                <div key={idx} className="bg-zinc-800/80 rounded-xl p-6 flex flex-col items-center border border-zinc-700 shadow">
+                                <div
+                                    key={idx}
+                                    className="bg-zinc-800/80 rounded-xl p-6 flex flex-col items-center border border-zinc-700 shadow"
+                                >
                                     <div className="mb-2">{stat.icon}</div>
-                                    <div className="text-3xl font-bold text-white">{stat.value}</div>
+                                    <div className="text-3xl font-bold text-white">
+                                        {stat.value}
+                                    </div>
                                     <div className="text-zinc-400 mt-1">{stat.label}</div>
                                 </div>
                             ))}
@@ -205,7 +256,7 @@ const RecruiterProfile = () => {
                 </main>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default RecruiterProfile
+export default RecruiterProfile;

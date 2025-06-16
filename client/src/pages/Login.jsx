@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaSignInAlt } from "react-icons/fa";
 import { assets } from '../assets/assets';
+import api from '../api/axios.js';
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -18,21 +19,32 @@ const Login = () => {
     setSuccess('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password || !form.role) {
       setError('Please fill in all fields.');
       return;
     }
-    // Simulate successful login
-    setSuccess('Login successful! Redirecting...');
-    setTimeout(() => {
-      if (form.role === 'candidate') {
-        navigate('/user/dashboard');
-      } else if (form.role === 'recruiter') {
-        navigate('/recruiter/dashboard');
-      }
-    }, 1500);
+    try {
+      const res = await api.post('/auth/login', {
+        email: form.email,
+        password: form.password,
+      });
+      // Save token to localStorage or context
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('role', form.role);
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        if (form.role === 'Candidate') {
+          navigate('/user/dashboard');
+        } else if (form.role === 'Recruiter') {
+          navigate('/recruiter/dashboard');
+        }
+      }, 1500);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
+
     setForm({
       email: '',
       password: '',
@@ -94,8 +106,8 @@ const Login = () => {
                   required
                 >
                   <option value="">Select Role</option>
-                  <option value="candidate">Candidate</option>
-                  <option value="recruiter">Recruiter</option>
+                  <option value="Candidate">Candidate</option>
+                  <option value="Recruiter">Recruiter</option>
                 </select>
               </div>
               <button

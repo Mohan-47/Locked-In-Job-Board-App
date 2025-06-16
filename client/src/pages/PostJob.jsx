@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import UserPanel from '../components/UserPanel'
 import { FaPlus, FaCheckCircle } from "react-icons/fa"
+import api from '../api/axios.js'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const initialState = {
   title: '',
@@ -17,16 +19,12 @@ const initialState = {
 }
 
 const jobTypes = [
-  'Full-Time',
-  'Part-Time',
+  'Full-time',
+  'Part-time',
   'Contract',
   'Internship',
-  'Remote',
 ]
 
-const employeeRanges = [
-  '1-10', '11-50', '51-100', '100-200', '200+'
-]
 
 const PostJob = () => {
   const [form, setForm] = useState(initialState)
@@ -34,13 +32,27 @@ const PostJob = () => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const handleChange = e => {
-    const { name, value, checked } = e.target;
-    if (name === 'salaryType') {
-      setForm(prev => ({ ...prev, salaryType: checked ? value : '' }))
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }))
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const editId = params.get("edit");
+
+
+  useEffect(() => {
+    if (editId) {
+      api.get(`/jobs/${editId}`).then(res => {
+        setForm({
+          ...res.data,
+          skills: res.data.skills || [],
+        });
+      });
     }
+  }, [editId]);
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   }
 
   const handleSkillAdd = () => {
@@ -57,18 +69,26 @@ const PostJob = () => {
     }))
   }
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    if (!form.title || !form.location || !form.type || !form.description || !form.companyName) {
-      setError('Please fill in all required fields.')
-      setSuccess(false)
-      return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+    try {
+      if (editId) {
+        // Update job
+        await api.put(`/jobs/${editId}`, form);
+        setSuccess(true);
+      } else {
+        // Create job
+        await api.post("/jobs", form);
+        setSuccess(true);
+        setForm(initialState);
+      }
+      navigate("/recruiter/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to save job.");
     }
-    setError('')
-    setSuccess(true)
-    // Here you would send the form data to your backend API
-    setForm(initialState)
-  }
+  };
 
   return (
     <div className="min-h-screen">
@@ -89,7 +109,7 @@ const PostJob = () => {
                     <span className="font-semibold text-zinc-200">Company info</span>
                   </div>
                   <div className="flex items-center gap-2 mb-2 opacity-60">
-                    <span className="font-semibold text-zinc-200">Post Job</span>
+                    <span className="font-semibold text-zinc-200">{editId ? "Update Job" : "Post Job"}</span>
                   </div>
                 </div>
               </div>
@@ -98,7 +118,7 @@ const PostJob = () => {
             <div className="lg:col-span-2 flex flex-col gap-8">
               <div className="bg-white/5 rounded-2xl shadow-xl border border-fuchsia-700/20 p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-bold text-zinc-100">Post a new job</h2>
+                  <h2 className="text-3xl font-bold text-zinc-100">{editId ? "Update Job" : "Post a New Job"}</h2>
                   <button className="px-4 py-1 rounded-lg bg-zinc-100/20 text-fuchsia-600 font-semibold hover:bg-fuchsia-100/30 transition text-sm">
                     Preview
                   </button>
@@ -159,30 +179,7 @@ const PostJob = () => {
                           className="w-full px-4 py-2 rounded-lg bg-zinc-900 text-white border border-zinc-700 focus:border-fuchsia-500 outline-none"
                           placeholder="e.g. 90,000 - 110,000"
                         />
-                        <div className="flex gap-4 mt-2">
-                          <label className="inline-flex items-center text-xs text-zinc-400">
-                            <input
-                              type="checkbox"
-                              name="salaryType"
-                              value="Net"
-                              checked={form.salaryType === "Net"}
-                              onChange={handleChange}
-                              className="mr-1 accent-fuchsia-600"
-                            />
-                            Net
-                          </label>
-                          <label className="inline-flex items-center text-xs text-zinc-400">
-                            <input
-                              type="checkbox"
-                              name="salaryType"
-                              value="Gross"
-                              checked={form.salaryType === "Gross"}
-                              onChange={handleChange}
-                              className="mr-1 accent-fuchsia-600"
-                            />
-                            Gross
-                          </label>
-                        </div>
+
                       </div>
                     </div>
                     <div className="mt-4">
@@ -260,17 +257,14 @@ const PostJob = () => {
                       </div>
                       <div>
                         <label className="block text-zinc-400 mb-1 font-medium">Employees</label>
-                        <select
+                        <input
+                          type="text"
                           name="employees"
                           value={form.employees}
                           onChange={handleChange}
                           className="w-full px-4 py-2 rounded-lg bg-zinc-900 text-white border border-zinc-700 focus:border-fuchsia-500 outline-none"
-                        >
-                          <option value="">Select</option>
-                          {employeeRanges.map(range => (
-                            <option key={range} value={range}>{range}</option>
-                          ))}
-                        </select>
+                          placeholder='e.g. 1000-2000'
+                        />
                       </div>
                       <div>
                         <label className="block text-zinc-400 mb-1 font-medium">Location</label>
@@ -290,7 +284,7 @@ const PostJob = () => {
                       type="submit"
                       className="px-8 py-3 rounded-lg bg-fuchsia-700 text-white font-semibold hover:bg-fuchsia-800 transition text-lg"
                     >
-                      Post Job
+                      {editId ? "Update Job" : "Post Job"}
                     </button>
                   </div>
                 </form>

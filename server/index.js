@@ -6,6 +6,8 @@ import "dotenv/config";
 import authRoutes from "./routes/auth.js";
 import jobRoutes from "./routes/job.js";
 import applicationRoutes from "./routes/application.js";
+import userRoutes from "./routes/user.js";
+
 // initialise express
 const app = express();
 
@@ -23,6 +25,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
