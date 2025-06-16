@@ -4,7 +4,6 @@ import UserPanel from '../components/UserPanel'
 import { FaBriefcase, FaCheckCircle, FaUsers, FaEye, FaBell, FaEnvelope } from "react-icons/fa"
 import { Link } from 'react-router-dom'
 import api from '../api/axios.js'
-import RecentApplications from '../components/RecentApplications.jsx'
 
 const RecruiterDashboard = () => {
   const [jobs, setJobs] = useState([]);
@@ -23,8 +22,33 @@ const RecruiterDashboard = () => {
   const shortlisted = applications.filter(app => app.status === "Shortlisted").length;
   const interviewed = applications.filter(app => app.status === "Interview");
   const notifications = []
-
   const recentApplications = applications.slice(0, 5);
+
+  const handleCloseJob = async (jobId) => {
+    try {
+      // Find the current job to get its current status
+      const currentJob = jobs.find(job => job._id === jobId);
+      const newStatus = currentJob.status === "Open" ? "Closed" : "Open";
+
+      // Update the job status
+      await api.put(`/jobs/${jobId}`, { status: newStatus });
+
+      // Update the local state to reflect the change
+      setJobs(prevJobs =>
+        prevJobs.map(job =>
+          job._id === jobId
+            ? { ...job, status: newStatus }
+            : job
+        )
+      );
+
+      console.log(`Job ${jobId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating job status:", error);
+    }
+  };
+
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -82,7 +106,7 @@ const RecruiterDashboard = () => {
                       <div>
                         <div className="font-semibold text-fuchsia-300">{interview.candidate.name}</div>
                         <div className="text-zinc-400 text-sm">{interview.job.title}</div>
-                        <div className="text-xs text-zinc-400">{new Date(interview.createdAt).toLocaleDateString()}</div>
+                        <div className="text-xs text-zinc-400">Applied On: {new Date(interview.appliedAt).toLocaleDateString()}</div>
                       </div>
                       <button className="ml-4 p-2 rounded-full bg-zinc-700 hover:bg-zinc-800 transition" title="Message">
                         <FaEnvelope className="text-white" />
@@ -162,7 +186,7 @@ const RecruiterDashboard = () => {
                           <td className="py-2 px-4 flex gap-2">
                             <Link to={`/recruiter/job/${job._id}/manage`} className="px-3 py-1 rounded bg-cyan-600 text-white text-xs hover:bg-cyan-700 transition duration-300">View</Link>
                             <Link to={`/recruiter/post-job?edit=${job._id}`} className="px-3 py-1 rounded bg-zinc-600 text-white text-xs hover:bg-zinc-700 transition duration-300">Edit</Link>
-                            <button className="px-3 py-1 rounded bg-red-700 text-zinc-200 text-xs hover:bg-red-800  transition duration-300">Close</button>
+                            <button className="px-3 py-1 rounded bg-red-700 text-zinc-200 text-xs hover:bg-red-800  transition duration-300" onClick={() => handleCloseJob(job._id)}>{job.status === "Open" ? "Close" : "Open"}</button>
                           </td>
                         </tr>
                       ))}

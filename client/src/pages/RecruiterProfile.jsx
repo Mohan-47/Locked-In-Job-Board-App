@@ -1,256 +1,466 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar";
+import React, { useState, useEffect } from "react";
+import Navbar from "./../components/Navbar";
 import UserPanel from "../components/UserPanel";
+import api from "../api/axios.js";
 import {
-    FaBuilding,
+    FaUser,
     FaEnvelope,
     FaPhone,
-    FaBriefcase,
-    FaEdit,
     FaMapMarkerAlt,
+    FaInfoCircle,
+    FaTools,
+    FaLinkedin,
+    FaGithub,
+    FaFileAlt,
+    FaBuilding,
     FaUserTie,
-    FaSave,
-    FaTimes,
+    FaBriefcase
 } from "react-icons/fa";
-
-const initialRecruiter = {
-    name: "Sarah Williams",
-    title: "Lead Technical Recruiter",
-    company: "Acme Tech Solutions",
-    email: "sarah.williams@acmetech.com",
-    phone: "+1 555-123-4567",
-    location: "San Francisco, CA",
-    about:
-        "Experienced recruiter with a passion for connecting top talent with innovative companies. Skilled in tech hiring, employer branding, and building strong candidate relationships.",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    stats: [
-        {
-            label: "Jobs Posted",
-            value: 24,
-            icon: <FaBriefcase className="text-fuchsia-400" />,
-        },
-        {
-            label: "Hires",
-            value: 12,
-            icon: <FaUserTie className="text-green-400" />,
-        },
-        {
-            label: "Active Listings",
-            value: 3,
-            icon: <FaBriefcase className="text-cyan-400" />,
-        },
-    ],
-    social: [
-        {
-            label: "LinkedIn",
-            url: "https://linkedin.com",
-            icon: <FaBuilding className="text-blue-500" />,
-        },
-    ],
-};
+import { Link } from "react-router-dom";
 
 const RecruiterProfile = () => {
-    const [recruiter, setRecruiter] = useState(initialRecruiter);
+    const [profile, setProfile] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const [form, setForm] = useState(recruiter);
+    const [form, setForm] = useState({});
+    const [resumeName, setResumeName] = useState("");
+
+    const [jobs, setJobs] = useState([]);
+
+    useEffect(() => {
+        api
+            .get("/users/profile")
+            .then((res) => {
+                setProfile(res.data);
+                setForm(res.data);
+                setResumeName(res.data.resume ? res.data.resume.name : "");
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        api
+            .get("/jobs/myposted")
+            .then((res) => {
+                setJobs(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    };
+
+    const handleSkillChange = (idx, value) => {
+        const newSkills = [...form.skills];
+        newSkills[idx] = value;
+        setForm({ ...form, skills: newSkills });
+    };
+
+    const handleAddSkill = () => {
+        setForm({ ...form, skills: [...form.skills, ""] });
+    };
+
+    const handleRemoveSkill = (idx) => {
+        const newSkills = form.skills.filter((_, i) => i !== idx);
+        setForm({ ...form, skills: newSkills });
+    };
 
     const handleEdit = () => {
-        setForm(recruiter);
         setEditMode(true);
+        setForm(profile);
     };
 
     const handleCancel = () => {
         setEditMode(false);
+        setForm(profile);
+        setResumeName(profile.resume ? profile.resume.name : "");
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        setRecruiter((prev) => ({
-            ...prev,
-            ...form,
-        }));
-        setEditMode(false);
+        try {
+            await api.put("/users/profile", form);
+            setProfile(form);
+            setEditMode(false);
+        } catch (err) {
+            console.error(err);
+        }
     };
+
+    if (!profile) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white">
+                Loading profile...
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen">
             <Navbar />
             <div className="flex">
                 <UserPanel />
-                <main className="flex-1 py-10 px-4">
-                    <div className="max-w-3xl mx-auto">
-                        {/* Profile Card */}
-                        <div className="bg-zinc-800/80 rounded-2xl shadow-xl border border-zinc-700 p-8 flex flex-col md:flex-row items-center gap-8">
-                            <img
-                                src={recruiter.avatar}
-                                alt={recruiter.name}
-                                className="w-32 h-32 rounded-full object-cover border-4 border-fuchsia-500 shadow"
-                            />
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    {editMode ? (
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={form.name}
-                                            onChange={handleChange}
-                                            className="text-3xl font-bold text-white bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 w-full"
-                                        />
-                                    ) : (
-                                        <h2 className="text-3xl font-bold text-white">
-                                            {recruiter.name}
-                                        </h2>
+                <main className="flex-1 flex justify-center items-start">
+                    <div className="w-full flex flex-col lg:flex-row gap-8 lg:h-[calc(100vh-90px)]">
+                        {/* Profile Section */}
+                        <div className="w-full lg:w-1/2 h-full overflow-y-auto">
+                            <div className="bg-zinc-800/30 rounded-3xl shadow-2xl border border-fuchsia-700/40 p-10 backdrop-blur-md transition-all duration-300 hover:border-fuchsia-400/40">
+                                <div className="flex flex-col items-center mb-8">
+                                    <div className="relative group mb-2">
+                                        <div className="w-36 h-36 rounded-full bg-gradient-to-tr from-fuchsia-500 via-fuchsia-700 to-fuchsia-900 p-1 shadow-lg">
+                                            <img
+                                                src={
+                                                    editMode
+                                                        ? form.profilePicture
+                                                        : profile.profilePicture
+                                                }
+                                                alt="avatar"
+                                                className="w-full h-full rounded-full object-cover bg-white"
+                                            />
+                                        </div>
+                                    </div>
+                                    {editMode && (
+                                        <div className="mt-3 w-72">
+                                            <input
+                                                type="text"
+                                                name="profilePicture"
+                                                value={form.profilePicture || ""}
+                                                onChange={handleChange}
+                                                placeholder="Paste profile picture URL"
+                                                className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                            />
+                                        </div>
                                     )}
                                     {!editMode && (
-                                        <button
-                                            className="ml-2 p-2 rounded-full bg-zinc-700 hover:bg-fuchsia-700 transition"
-                                            title="Edit Profile"
-                                            onClick={handleEdit}
-                                        >
-                                            <FaEdit className="text-fuchsia-400" />
-                                        </button>
+                                        <h2 className="text-3xl font-extrabold text-white mt-4 tracking-tight drop-shadow flex items-center gap-2">
+                                            <FaUser className="text-fuchsia-400" /> Hi! {profile.name}
+                                        </h2>
                                     )}
                                 </div>
-                                {editMode ? (
-                                    <input
-                                        type="text"
-                                        name="title"
-                                        value={form.title}
-                                        onChange={handleChange}
-                                        className="text-fuchsia-400 font-semibold text-lg bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 w-full mb-1"
-                                    />
-                                ) : (
-                                    <div className="text-fuchsia-400 font-semibold text-lg">
-                                        {recruiter.title}
+                                <form onSubmit={handleSave} className="space-y-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaUser /> Name
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    value={form.name}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <div className="text-white font-semibold">
+                                                    {profile.name}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaEnvelope /> Email
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    value={form.email}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <div className="text-white">{profile.email}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaPhone /> Phone
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="text"
+                                                    name="phone"
+                                                    value={form.phone}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <div className="text-white">{profile.phone}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaMapMarkerAlt /> Location
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="text"
+                                                    name="location"
+                                                    value={form.location}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <div className="text-white">{profile.location}</div>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
-                                <div className="flex items-center gap-2 mt-2 text-zinc-300">
-                                    <FaBuilding className="text-fuchsia-400" />
-                                    {editMode ? (
-                                        <input
-                                            type="text"
-                                            name="company"
-                                            value={form.company}
-                                            onChange={handleChange}
-                                            className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-zinc-300 w-full"
-                                        />
-                                    ) : (
-                                        <span>{recruiter.company}</span>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-2 mt-1 text-zinc-400 text-sm">
-                                    <FaMapMarkerAlt className="text-fuchsia-400" />
-                                    {editMode ? (
-                                        <input
-                                            type="text"
-                                            name="location"
-                                            value={form.location}
-                                            onChange={handleChange}
-                                            className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-zinc-300 w-full"
-                                        />
-                                    ) : (
-                                        <span>{recruiter.location}</span>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-4 mt-4 flex-wrap">
-                                    <span className="flex items-center gap-1 text-zinc-300">
-                                        <FaEnvelope />
-                                        {editMode ? (
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={form.email}
-                                                onChange={handleChange}
-                                                className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-zinc-300 w-full"
-                                            />
-                                        ) : (
-                                            <a
-                                                href={`mailto:${recruiter.email}`}
-                                                className="hover:text-fuchsia-400 transition"
-                                            >
-                                                {recruiter.email}
-                                            </a>
-                                        )}
-                                    </span>
-                                    <span className="flex items-center gap-1 text-zinc-300">
-                                        <FaPhone />
+                                    <div>
+                                        <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                            <FaUserTie /> Currently Working As
+                                        </label>
                                         {editMode ? (
                                             <input
                                                 type="text"
-                                                name="phone"
-                                                value={form.phone}
+                                                name="jobTitle"
+                                                value={form.jobTitle}
                                                 onChange={handleChange}
-                                                className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-zinc-300 w-full"
+                                                className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
                                             />
                                         ) : (
-                                            recruiter.phone
+                                            <div className="text-white">{profile.jobTitle}</div>
                                         )}
-                                    </span>
-                                </div>
-                                <div className="flex gap-3 mt-3">
-                                    {recruiter.social.map((s) => (
-                                        <a
-                                            key={s.label}
-                                            href={s.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="hover:scale-110 transition"
-                                        >
-                                            {s.icon}
-                                        </a>
-                                    ))}
-                                </div>
-                                {editMode && (
-                                    <div className="flex gap-3 mt-4">
-                                        <button
-                                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-fuchsia-700 text-white font-semibold hover:bg-fuchsia-800 transition"
-                                            onClick={handleSave}
-                                        >
-                                            <FaSave /> Save
-                                        </button>
-                                        <button
-                                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 text-white font-semibold hover:bg-zinc-800 transition"
-                                            onClick={handleCancel}
-                                        >
-                                            <FaTimes /> Cancel
-                                        </button>
                                     </div>
-                                )}
+                                    <div>
+                                        <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                            <FaBuilding /> Currently Working At
+                                        </label>
+                                        {editMode ? (
+                                            <input
+                                                type="text"
+                                                name="companyName"
+                                                value={form.companyName}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                            />
+                                        ) : (
+                                            <div className="text-white">{profile.companyName}</div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                            <FaInfoCircle /> About
+                                        </label>
+                                        {editMode ? (
+                                            <textarea
+                                                name="about"
+                                                value={form.about}
+                                                onChange={handleChange}
+                                                rows={3}
+                                                className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none resize-none transition"
+                                            />
+                                        ) : (
+                                            <div className="text-zinc-200">{profile.about}</div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                            <FaTools /> Skills
+                                        </label>
+                                        {editMode ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {form.skills.map((skill, idx) => (
+                                                    <div key={idx} className="flex items-center gap-1">
+                                                        <input
+                                                            type="text"
+                                                            value={skill}
+                                                            onChange={(e) =>
+                                                                handleSkillChange(idx, e.target.value)
+                                                            }
+                                                            className="px-2 py-1 rounded bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveSkill(idx)}
+                                                            className="text-fuchsia-400 hover:text-fuchsia-600 text-lg px-1"
+                                                        >
+                                                            &times;
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    onClick={handleAddSkill}
+                                                    className="px-2 py-1 rounded bg-fuchsia-700 text-white hover:bg-fuchsia-800 transition"
+                                                >
+                                                    + Add
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-wrap gap-2">
+                                                {profile.skills.map((skill, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        className="bg-gradient-to-r from-fuchsia-700 via-fuchsia-500 to-fuchsia-700 text-white px-3 py-1 rounded-full text-xs shadow flex items-center gap-1"
+                                                    >
+                                                        <FaTools className="text-xs" /> {skill}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaLinkedin /> LinkedIn
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="url"
+                                                    name="linkedin"
+                                                    value={form.linkedin}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <a
+                                                    href={profile.linkedin}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-fuchsia-400 hover:underline flex items-center gap-1"
+                                                >
+                                                    {profile.linkedin}
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                                <FaGithub /> GitHub
+                                            </label>
+                                            {editMode ? (
+                                                <input
+                                                    type="url"
+                                                    name="github"
+                                                    value={form.github}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                            ) : (
+                                                <a
+                                                    href={profile.github}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-fuchsia-400 hover:underline flex items-center gap-1"
+                                                >
+                                                    {profile.github}
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-fuchsia-300 mb-1 font-semibold flex items-center gap-2">
+                                            <FaFileAlt /> Resume
+                                        </label>
+                                        {editMode ? (
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="text"
+                                                    name="resume"
+                                                    value={form.resume || ""}
+                                                    onChange={handleChange}
+                                                    placeholder="Paste resume URL"
+                                                    className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700 focus:border-fuchsia-400 outline-none transition"
+                                                />
+                                                {resumeName && (
+                                                    <span className="text-fuchsia-300 text-xs">
+                                                        {resumeName}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ) : profile.resume ? (
+                                            <a
+                                                href={profile.resume}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-fuchsia-400 hover:underline flex items-center gap-1"
+                                            >
+                                                View Resume
+                                            </a>
+                                        ) : (
+                                            <span className="text-zinc-400 text-xs">
+                                                No resume uploaded
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex justify-end gap-4 pt-4">
+                                        {editMode ? (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleCancel}
+                                                    className="px-6 py-2 rounded-lg bg-zinc-700 text-white hover:bg-zinc-800 transition"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    type="submit"
+                                                    className="px-6 py-2 rounded-lg bg-gradient-to-r from-fuchsia-700 to-fuchsia-900 text-white font-semibold hover:from-fuchsia-800 hover:to-fuchsia-900 shadow transition"
+                                                >
+                                                    Save
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleEdit}
+                                                className="px-6 py-2 rounded-lg bg-gradient-to-r from-fuchsia-700 to-fuchsia-900 text-white font-semibold hover:from-fuchsia-800 hover:to-fuchsia-900 shadow transition"
+                                            >
+                                                Edit Profile
+                                            </button>
+                                        )}
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        {/* Stats Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                            {recruiter.stats.map((stat, idx) => (
-                                <div
-                                    key={idx}
-                                    className="bg-zinc-800/80 rounded-xl p-6 flex flex-col items-center border border-zinc-700 shadow"
-                                >
-                                    <div className="mb-2">{stat.icon}</div>
-                                    <div className="text-3xl font-bold text-white">
-                                        {stat.value}
+
+                        <div className="w-full lg:w-1/2 flex flex-col h-full overflow-y-auto">
+                            <div>
+                                <div className="bg-zinc-800/80 rounded-2xl shadow-2xl border border-fuchsia-700/30 p-8 backdrop-blur-md h-full flex flex-col transition-all duration-300 hover:border-fuchsia-400/40">
+                                    <h2 className="text-2xl font-bold text-white mb-6">
+                                        Jobs Posted
+                                    </h2>
+                                    <div className="flex-1 overflow-y-auto pr-2">
+                                        <ul className="space-y-4">
+                                            {jobs.map((app) => (
+                                                <li
+                                                    key={app._id}
+                                                >
+                                                    <Link to={`/recruiter/job/${app._id}/manage`} className="flex items-center gap-4 bg-zinc-900/80 rounded-lg p-4 border border-zinc-700 text-zinc-200 hover:bg-zinc-800/50 transition">
+                                                        <div className="text-2xl">
+                                                            <FaBriefcase />
+                                                        </div>
+                                                        <div className="flex-col flex-1">
+                                                            <div className="font-semibold">
+                                                                {app.title}
+                                                            </div>
+                                                            <div className="text-xs text-zinc-400">
+                                                                {app.companyName} • {app.type} •{" "}
+                                                                {app.location}
+                                                            </div>
+                                                            <div className="text-xs text-zinc-500">
+                                                                {new Date(app.createdAt).toLocaleDateString()}
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            className={`px-3 py-1 rounded-md text-xs font-semibold 
+                                                        ${app.status === "Open"
+                                                                    ? "bg-cyan-900 text-cyan-300"
+                                                                    : "bg-zinc-700 text-fuchsia-300"
+                                                                }`}
+                                                        >
+                                                            {app.status}
+                                                        </span>
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                    <div className="text-zinc-400 mt-1">{stat.label}</div>
                                 </div>
-                            ))}
-                        </div>
-                        {/* About Card */}
-                        <div className="bg-zinc-800/80 rounded-2xl shadow-xl border border-zinc-700 p-8 mt-8">
-                            <h3 className="text-xl font-semibold text-white mb-2">About</h3>
-                            {editMode ? (
-                                <textarea
-                                    name="about"
-                                    value={form.about}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 rounded-lg bg-zinc-900 text-white border border-zinc-700 focus:border-fuchsia-500 outline-none min-h-[80px]"
-                                />
-                            ) : (
-                                <p className="text-zinc-300">{recruiter.about}</p>
-                            )}
+                            </div>
                         </div>
                     </div>
                 </main>
