@@ -1,7 +1,19 @@
 import React from "react";
 import { FaTimes, FaBookmark, FaBriefcase, FaMapMarkerAlt, FaClock } from "react-icons/fa";
+import api from "../api/axios.js";
 
 const JobModal = ({ job, open, onClose, onBookmark }) => {
+
+    const handleApply = async (id) => {
+        try {
+            await api.post("applications/apply", { jobId: id });
+            alert("Applied successfully");
+        } catch (error) {
+            console.error('Error applying to job:', error);
+            alert(error.response?.data?.message || "Failed to apply.");
+        }
+
+    };
     if (!open || !job) return null;
 
     return (
@@ -32,7 +44,7 @@ const JobModal = ({ job, open, onClose, onBookmark }) => {
                 <div className="text-zinc-200 mt-4 mb-6">{job.description}</div>
                 <button
                     className="w-full py-2 rounded-lg bg-fuchsia-700 text-white font-semibold hover:bg-fuchsia-800 transition"
-                // onClick={...} // Add apply logic here
+                    onClick={() => handleApply(job.id)}
                 >
                     Apply Now
                 </button>
