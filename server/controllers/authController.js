@@ -56,7 +56,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
 
     res.status(200).json({
@@ -72,5 +72,23 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const verify = (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized access" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const role = decoded.role;
+    const userId = decoded.userId;
+    res.status(200).json({ role, userId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error while verifying token" });
   }
 };

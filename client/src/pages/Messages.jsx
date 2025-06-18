@@ -118,7 +118,7 @@ const Messages = () => {
             <div className="flex" style={{ height: "calc(100vh - 80px)" }}>
                 {/* Sidebar */}
                 <UserPanel />
-                <aside className="w-72 bg-zinc-800 border-r border-zinc-700 flex flex-col rounded-lg h-full min-h-0">
+                <aside className="w-72 bg-zinc-900/20 border border-zinc-700/50 flex flex-col rounded-lg h-full min-h-0">
                     <div className="p-4">
                         <input
                             className="w-full px-3 py-2 rounded-lg bg-zinc-900 text-white border border-zinc-700"
@@ -154,7 +154,7 @@ const Messages = () => {
                     <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-h-0">
                         {selected.messages.map((msg, idx) => (
                             <div key={idx} className={`flex ${msg.fromMe ? "justify-end" : "justify-start"}`}>
-                                <div className={`max-w-xs px-4 py-2 rounded-lg ${msg.fromMe ? "bg-fuchsia-600 text-white" : "bg-zinc-800 text-zinc-200"}`}>
+                                <div className={`max-w-xs px-4 py-2 rounded-lg ${msg.fromMe ? "bg-fuchsia-600/40 text-white" : "bg-zinc-800 text-zinc-200"}`}>
                                     <div>{msg.text}</div>
                                     {msg.attachment && (
                                         <div className="mt-2 flex items-center gap-2 bg-zinc-900 rounded px-2 py-1 text-xs">
@@ -179,7 +179,7 @@ const Messages = () => {
                             onKeyDown={e => { if (e.key === "Enter") handleSend() }}
                         />
                         <button
-                            className="px-6 py-2 rounded-lg bg-fuchsia-700 text-white font-semibold hover:bg-fuchsia-800 transition"
+                            className="py-2 px-5 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white shadow-lg shadow-fuchsia-500/25"
                             onClick={handleSend}
                         >
                             Send
@@ -187,7 +187,7 @@ const Messages = () => {
                     </div>
                 </section>
                 {/* Profile Panel */}
-                <aside className="w-80 bg-zinc-800 border-l border-zinc-700 flex flex-col items-center py-8 px-6 h-full min-h-0">
+                <aside className="w-80 bg-zinc-900/50 border-l border-zinc-700/50 flex flex-col items-center py-8 px-6 h-full min-h-0">
                     <img src={userProfile.avatar} alt={userProfile.name} className="w-20 h-20 rounded-full object-cover mb-3" />
                     <div className="font-semibold text-xl text-white">{userProfile.name}</div>
                     <div className="text-zinc-400 mb-2">{userProfile.title}</div>

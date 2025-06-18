@@ -16,7 +16,7 @@ export const createJob = async (req, res) => {
 
 export const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.find().populate("postedBy", "name companyName");
+    const jobs = await Job.find().populate("postedBy");
     res.json(jobs);
   } catch (err) {
     console.error("Error fetching jobs:", err);
