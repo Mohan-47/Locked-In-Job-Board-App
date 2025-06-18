@@ -13,22 +13,26 @@ it allows candidates to find and apply for jobs, while recruiters can post and m
 - 🧠 **State Management**: Context API for global state handling
 
 ## Landing Page
-<img src="https://github.com/user-attachments/assets/ae99207a-3be9-4faf-adc3-96a2726b6224" width="500"/>
+
+<img src="https://github.com/user-attachments/assets/6849ef54-5ec5-4933-80c0-949a08c012ca" width="500"/>
 
 ## Candidate Dashboard
-<img src="https://github.com/user-attachments/assets/2782bf2c-0113-457c-9d42-e5c308ec08d4" width = "500"/>
+<img src="https://github.com/user-attachments/assets/f9090c04-542c-410f-8843-3cfc4f70bb86" width = "500"/>
 
 ## Recruiter Dashboard
-<img src="https://github.com/user-attachments/assets/44f4e810-eaa6-4401-a507-43ad00415867" width = "500"/>
+<img src="https://github.com/user-attachments/assets/dd196b1f-c9ea-4399-9ea6-c7a5a9abf2c8" width = "500"/>
 
-## Login 
-<img src="https://github.com/user-attachments/assets/2898ea45-a4c9-42bd-b9fa-1158f67de532" width = "500"/>
+## Login & Register
+<img src="https://github.com/user-attachments/assets/7dc63f73-185e-45f4-b044-0600d23351a3" width = "500"/>
+<img src="https://github.com/user-attachments/assets/8bf7b149-bbee-4f56-a13f-dd57702ba204" width = "500" />
 
 ## Apply Job
-<img src="https://github.com/user-attachments/assets/1258931b-d9c2-432d-905c-328a614cf55b" width = "500"/>
+<img src="https://github.com/user-attachments/assets/8b58f271-20ef-4683-b53a-39e45a25b2b7" width = "500"/>
+<img src="https://github.com/user-attachments/assets/2b0b3066-2d58-4e43-b3f4-d04f08f60e4f" width = "500"/>
 
-## Post Job
-<img src="https://github.com/user-attachments/assets/d6959942-9e34-40c8-ba16-6b0139f2cef0" width = "500"/>
+## Post/Edit & Manage Job
+<img src="https://github.com/user-attachments/assets/b8566664-acb2-413c-b477-26dfc87cdad0" width = "500"/>
+<img src="https://github.com/user-attachments/assets/f12ec775-f505-47bd-a078-b6522a4412f1" width = "500"/>
 
 ## UI for Messaging (Backend not yet built)
 <img src="https://github.com/user-attachments/assets/00119288-6d52-4785-8e54-307458a5afa7" width = "500"/>
