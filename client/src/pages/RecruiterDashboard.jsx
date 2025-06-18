@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 const RecruiterDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch jobs posted by recruiter
@@ -26,6 +27,8 @@ const RecruiterDashboard = () => {
     api
       .get("/applications/applicationreceived")
       .then((res) => setApplications(res.data));
+
+    setIsLoading(false);
   }, []);
 
   const totalJobs = jobs.length;
@@ -62,6 +65,13 @@ const RecruiterDashboard = () => {
       console.error("Error updating job status:", error);
     }
   };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

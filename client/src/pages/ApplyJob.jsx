@@ -19,6 +19,7 @@ const ApplyJob = () => {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -30,6 +31,7 @@ const ApplyJob = () => {
         );
         setJobs(j);
         // setJobs(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         toast.error("Failed to load jobs.");
@@ -72,6 +74,13 @@ const ApplyJob = () => {
       job.location?.toLowerCase().includes(location.toLowerCase()) &&
       (type ? job.type === type : true)
   );
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white">
+        Loading Jobs...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-900 text-white">

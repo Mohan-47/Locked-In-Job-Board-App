@@ -57,6 +57,7 @@ const UserDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [user, setUser] = useState({});
   const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch user profile
@@ -74,6 +75,7 @@ const UserDashboard = () => {
         const openJobs = response.data.filter((job) => job.status === "Open");
         setJobs(openJobs);
         // setJobs(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }
@@ -103,7 +105,13 @@ const UserDashboard = () => {
   const interviewJobs = applications.filter(
     (app) => app.status === "Interview"
   );
-
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white">
+        Loading...
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen">
       <Navbar />
