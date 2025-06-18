@@ -30,7 +30,8 @@ it allows candidates to find and apply for jobs, while recruiters can post and m
 <img src="https://github.com/user-attachments/assets/8b58f271-20ef-4683-b53a-39e45a25b2b7" width = "500"/>
 <img src="https://github.com/user-attachments/assets/2b0b3066-2d58-4e43-b3f4-d04f08f60e4f" width = "500"/>
 
-## Manage Job
+## Post/Edit & Manage Job
+<img src="https://github.com/user-attachments/assets/b8566664-acb2-413c-b477-26dfc87cdad0" width = "500"/>
 <img src="https://github.com/user-attachments/assets/f12ec775-f505-47bd-a078-b6522a4412f1" width = "500"/>
 
 ## UI for Messaging (Backend not yet built)
