@@ -21,14 +21,17 @@ const RecruiterDashboard = () => {
 
   useEffect(() => {
     // Fetch jobs posted by recruiter
-    api.get("/jobs/myposted").then((res) => setJobs(res.data));
+    const fetchData = async () => {
+      await api.get("/jobs/myposted").then((res) => setJobs(res.data));
 
-    // Fetch all applications received for recruiter's jobs
-    api
-      .get("/applications/applicationreceived")
-      .then((res) => setApplications(res.data));
+      // Fetch all applications received for recruiter's jobs
+      await api
+        .get("/applications/applicationreceived")
+        .then((res) => setApplications(res.data));
 
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+    fetchData();
   }, []);
 
   const totalJobs = jobs.length;
