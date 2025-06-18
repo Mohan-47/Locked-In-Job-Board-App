@@ -223,7 +223,7 @@ const UserProfile = () => {
                           name="jobTitle"
                           value={form.jobTitle}
                           onChange={handleChange}
-                          className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700/50 focus:border-fuchsia-400 outline-none transition"
+                          className="w-full px-3 py-2 rounded-lg bg-zinc-900 text-white border border-fuchsia-700/50 focus:border-fuchsia-400 outline-none transition"
                         />
                       ) : (
                         <div className="text-white">{profile.jobTitle}</div>
@@ -240,7 +240,7 @@ const UserProfile = () => {
                           name="companyName"
                           value={form.companyName}
                           onChange={handleChange}
-                          className="w-full px-3 py-2 rounded-lg bg-zinc-800 text-white border border-fuchsia-700/50 focus:border-fuchsia-400 outline-none transition"
+                          className="w-full px-3 py-2 rounded-lg bg-zinc-900 text-white border border-fuchsia-700/50 focus:border-fuchsia-400 outline-none transition"
                         />
                       ) : (
                         <div className="text-white">{profile.companyName}</div>

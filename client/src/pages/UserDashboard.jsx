@@ -18,44 +18,46 @@ import UserPanel from "./../components/UserPanel";
 import RecentApplications from "./../components/RecentApplications";
 import api from "../api/axios.js";
 
-const savedJobs = [
-  {
-    title: "Senior IT Operations Engineer",
-    company: "DuckDuckGo",
-    type: "Full-Time",
-    location: "Worldwide",
-    icon: <FaBookmark className="text-fuchsia-400" />,
-    days: "2 day to apply",
-  },
-  {
-    title: "Creative Director - Crypto",
-    company: "CashApp",
-    type: "Full-Time",
-    location: "New York",
-    icon: <FaBookmark className="text-fuchsia-400" />,
-    days: "2 day to apply",
-  },
-  {
-    title: "UX Research",
-    company: "Fireart Studio",
-    type: "Full-Time",
-    location: "Poland",
-    icon: <FaBookmark className="text-fuchsia-400" />,
-    days: "2 day to apply",
-  },
-  {
-    title: "Full Stack Developer",
-    company: "Google",
-    type: "Full-Time",
-    location: "USA",
-    icon: <FaBookmark className="text-fuchsia-400" />,
-    days: "3 day to apply",
-  },
-];
+// const savedJobs = [
+//   {
+//     title: "Senior IT Operations Engineer",
+//     company: "DuckDuckGo",
+//     type: "Full-Time",
+//     location: "Worldwide",
+//     icon: <FaBookmark className="text-fuchsia-400" />,
+//     days: "2 day to apply",
+//   },
+//   {
+//     title: "Creative Director - Crypto",
+//     company: "CashApp",
+//     type: "Full-Time",
+//     location: "New York",
+//     icon: <FaBookmark className="text-fuchsia-400" />,
+//     days: "2 day to apply",
+//   },
+//   {
+//     title: "UX Research",
+//     company: "Fireart Studio",
+//     type: "Full-Time",
+//     location: "Poland",
+//     icon: <FaBookmark className="text-fuchsia-400" />,
+//     days: "2 day to apply",
+//   },
+//   {
+//     title: "Full Stack Developer",
+//     company: "Google",
+//     type: "Full-Time",
+//     location: "USA",
+//     icon: <FaBookmark className="text-fuchsia-400" />,
+//     days: "3 day to apply",
+//   },
+// ];
 
 const UserDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [user, setUser] = useState({});
+  const [jobs, setJobs] = useState([]);
+
   useEffect(() => {
     // Fetch user profile
     api.get("/users/profile").then((res) => setUser(res.data));
@@ -66,6 +68,17 @@ const UserDashboard = () => {
       .then((res) => setApplications(res.data));
 
     // Fetch saved jobs (if you have this endpoint)
+    const fetchJobs = async () => {
+      try {
+        const response = await api.get("/jobs");
+        const openJobs = response.data.filter((job) => job.status === "Open");
+        setJobs(openJobs);
+        // setJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+    fetchJobs();
     // api.get("/jobs/saved").then(res => setSavedJobs(res.data)).catch(() => setSavedJobs([]));
   }, []);
 
@@ -78,7 +91,10 @@ const UserDashboard = () => {
     (a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)
   );
   // setApplications(js);
-  console.log(js);
+  // console.log(js);
+  const jobsForYou = jobs
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 4);
 
   const recentApplications = js.slice(0, 3);
   // console.log(recentApplications);
@@ -194,10 +210,10 @@ const UserDashboard = () => {
                         transition-all duration-300 ease-in-out hover:border-purple-500/50"
             >
               <h2 className="text-xl font-semibold text-zinc-200 mb-2">
-                Saved Jobs
+                Jobs For You
               </h2>
               <ul className="space-y-2">
-                {savedJobs.map((job, idx) => (
+                {jobsForYou.map((job, idx) => (
                   <li
                     key={idx}
                     className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-zinc-900 rounded-lg p-4 border border-zinc-700/50 text-zinc-200 
@@ -209,24 +225,24 @@ const UserDashboard = () => {
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold truncate">{job.title}</div>
                       <div className="text-xs text-zinc-400 truncate">
-                        {job.company} • {job.type} • {job.location}
+                        {job.companyName} • {job.type} • {job.location}
                       </div>
                     </div>
                     <span
                       className="px-3 py-1 rounded-md text-xs font-semibold bg-gray-950/30 text-fuchsia-100 border border-fuchsia-500/30 whitespace-nowrap flex-shrink-0
                                     transition-colors duration-300 group-hover:bg-fuchsia-700/30 group-hover:border-fuchsia-400"
                     >
-                      {job.days}
+                      {job.applicants.length} Applicants
                     </span>
                   </li>
                 ))}
               </ul>
               <Link
-                to="" // Assuming a dedicated page for saved jobs
+                to="/user/apply-job" // Assuming a dedicated page for saved jobs
                 className="pt-3 text-gray-400 hover:underline text-sm block text-right
                            transition-colors duration-300 hover:text-fuchsia-300"
               >
-                View Saved Jobs
+                View Jobs
               </Link>
             </div>
           </div>

@@ -156,7 +156,7 @@ const JobModal = ({ job, open, onClose, onBookmark }) => {
 
                   {job.companyLocation && (
                     <div>
-                      <span className="text-zinc-400">Headquarters:</span>
+                      <span className="text-zinc-400">Location:</span>
                       <div className="text-zinc-200">{job.companyLocation}</div>
                     </div>
                   )}

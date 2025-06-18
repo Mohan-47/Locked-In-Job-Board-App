@@ -36,7 +36,9 @@ const RecruiterDashboard = () => {
   const interviewed = applications.filter((app) => app.status === "Interview");
   const recentApplications = applications.slice(0, 5);
   // console.log(recentApplications);
-  const js = jobs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const js = jobs
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 4);
   // console.log(js);
   const handleCloseJob = async (jobId) => {
     try {
@@ -237,7 +239,7 @@ const RecruiterDashboard = () => {
                         <FaEye className="text-cyan-400" />
                       </Link>
                       <Link
-                        to="/messages"
+                        to=""
                         className="p-2 rounded-full hover:bg-zinc-800 transition"
                         title="Message"
                       >

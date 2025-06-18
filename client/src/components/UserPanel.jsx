@@ -95,7 +95,6 @@ const UserPanel = () => {
               )}
             </Link>
             <Link
-              to="/messages"
               onClick={onLinkClick}
               className={`group flex items-center gap-3 py-3 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
                 isUserMessages
@@ -174,7 +173,7 @@ const UserPanel = () => {
               )}
             </Link>
             <Link
-              to="/messages"
+              to=""
               onClick={onLinkClick}
               className={`group flex items-center gap-3 py-3 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
                 isRecruiterMessages

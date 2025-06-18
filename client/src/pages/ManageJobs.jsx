@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import ApplicantProfileModal from "../components/ProfileModal.jsx";
 import { toast } from "react-hot-toast";
+import { FaCode } from "react-icons/fa";
 const ManageJob = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
@@ -16,9 +17,12 @@ const ManageJob = () => {
     // Fetch job details
     api.get(`/jobs/${jobId}`).then((res) => setJob(res.data));
     // Fetch applicants for this job
-    api
-      .get(`/applications/job/${jobId}`)
-      .then((res) => setApplicants(res.data));
+    api.get(`/applications/job/${jobId}`).then((res) => {
+      const j = res.data.sort(
+        (a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)
+      );
+      setApplicants(j);
+    });
   }, [jobId]);
 
   const openProfileModal = (applicantCandidateData) => {
@@ -163,6 +167,24 @@ const ManageJob = () => {
                 {job.description}
               </p>
             </div>
+            {job.skills && job.skills.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold text-fuchsia-300 mb-3 flex items-center gap-2">
+                  <FaCode />
+                  Required Skills
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {job.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="bg-zinc-950/30 border border-fuchsia-500/30 hover:bg-purple-700/30 hover:border-purple-400 transition-colors duration-300 text-white px-3 py-1 rounded-xl text-sm shadow flex items-center gap-1"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
             <div>
               <h3 className="text-xl font-semibold text-fuchsia-300 mb-5">
                 Applicants ({applicants.length})

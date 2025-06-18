@@ -82,7 +82,7 @@ export const getApplicationsReceived = async (req, res) => {
   try {
     const recruiterId = req.user.userId;
     const jobs = await Job.find({ postedBy: recruiterId });
-    console.log(jobs);
+    // console.log(jobs);
     const applications = await Application.find({
       job: { $in: jobs.map((job) => job._id) },
     })

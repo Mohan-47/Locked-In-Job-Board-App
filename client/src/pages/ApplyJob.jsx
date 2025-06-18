@@ -25,7 +25,10 @@ const ApplyJob = () => {
       try {
         const response = await api.get("/jobs");
         const openJobs = response.data.filter((job) => job.status === "Open");
-        setJobs(openJobs);
+        const j = openJobs.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setJobs(j);
         // setJobs(response.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
