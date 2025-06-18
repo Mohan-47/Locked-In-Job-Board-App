@@ -2,6 +2,15 @@
 
 A full-stack web application that connects **job seekers** and **recruiters** through a modern, responsive, and role-based job board. Built using the **MERN stack**, 
 it allows candidates to find and apply for jobs, while recruiters can post and manage job listings.
+## ✨ Features
+
+- 🧑‍💼 **Two User Roles**: Candidate and Recruiter
+- 🔐 **JWT Auth**: Secure login/register and protected routes
+- 📄 **Candidate Actions**: Apply to jobs, track status, manage profile
+- 💼 **Recruiter Actions**: Post jobs, view applicants, manage listings
+- 🎨 **Responsive UI**: Built with Tailwind CSS + Vite
+- ⚡ **REST API**: Node.js + Express.js backend with MongoDB
+- 🧠 **State Management**: Context API for global state handling
 
 ## Landing Page
 <img src="https://github.com/user-attachments/assets/ae99207a-3be9-4faf-adc3-96a2726b6224" width="500"/>
@@ -46,8 +55,7 @@ it allows candidates to find and apply for jobs, while recruiters can post and m
 - Register and log in
 - Search and filter jobs by title, company, location, and job type
 - Apply to jobs
-- View application status (e.g., In Review, Shortlisted, Rejected) (Not integrated with Frontend API built)
-- Bookmark jobs
+- View application status (e.g., In Review, Shortlisted, Rejected)
 - Manage profile
 
 ### 🧑‍💼 Recruiters
