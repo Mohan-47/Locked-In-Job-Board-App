@@ -1,4 +1,4 @@
-# 🔐 Locked-In Job Board App
+# 🔐 Locked-In Job Board App <a href="https://locked-in-client.onrender.com">Live</a>
 
 A full-stack web application that connects **job seekers** and **recruiters** through a modern, responsive, and role-based job board. Built using the **MERN stack**, 
 it allows candidates to find and apply for jobs, while recruiters can post and manage job listings.
